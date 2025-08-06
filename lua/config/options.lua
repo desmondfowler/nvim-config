@@ -1,6 +1,6 @@
 -- options.lua
 vim.g.python3_host_prog = '/home/desmond/venv/bin/python'
-vim.g.have_nerd_font = true
+vim.g.have_nerd_font = false
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.showmode = false
