@@ -12,7 +12,7 @@ command_exists() { command -v "$1" >/dev/null 2>&1; }
 if command_exists apt; then
   PKG_MANAGER="apt"
   UPDATE="sudo apt update"
-  INSTALL="sudp apt install -y"
+  INSTALL="sudo apt install -y"
 elif command_exists pacman; then
   PKG_MANAGER="pacman"
   UPDATE="sudo pacman -Syu"
