@@ -4,7 +4,7 @@ A Neovim setup with Lazy, LSP, Treesitter, etc. Uses the nightly Neovim version 
 
 ## Installation
 
-Run the following script:
+Ensure you have `sudo` and `curl` on your system, then run the following script:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/desmondfowler/nvim-config/master/requirements.sh | bash
