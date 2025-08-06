@@ -77,6 +77,8 @@ if ! command_exists black; then
     echo "Installing black..."
     python3 -m venv ~/nvim-venv
     source ~/nvim-venv/bin/activate
+    pip3 install neovim
+    pip3 install pynvim
     pip3 install black
 fi
 
