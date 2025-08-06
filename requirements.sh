@@ -44,10 +44,10 @@ fi
 
 if ! bob list | grep -q "nightly"; then
   echo "Installing Neovim nightly via Bob..."
-  bob install nightly
+  yes | bob install nightly
 fi
 echo "Setting Neovim nightly as default..."
-bob use nightly
+yes | bob use nightly
 
 if ! grep -q "bob/nvim-bin" "$HOME/.bashrc"; then
   echo "Adding Bob's Neovim binary path to ~/.bashrc..."
