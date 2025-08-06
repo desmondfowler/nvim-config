@@ -23,13 +23,13 @@ elif command_exists brew; then
   INSTALL="brew install"
 else
   echo "Unsupported package manager. Please install git, xclip, curl,
-  make, unzip, gcc, ripgrep, python3, python3-pip, luarocks, trash-cli, fzf manually."
+  make, unzip, gcc, ripgrep, python3, python3-venv, python3-pip, luarocks, trash-cli, fzf manually."
   exit 1
 fi
 
 echo "Installing $PKG_MANAGER packages..."
 $UPDATE
-$INSTALL git xclip curl make unzip gcc ripgrep python3 python3-pip luarocks trash-cli fzf
+$INSTALL git xclip curl make unzip gcc ripgrep python3 python3-venv python3-pip luarocks trash-cli fzf
 
 if ! command_exists cargo; then
   echo "Installing Rust and Cargo via rustup..."
