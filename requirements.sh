@@ -12,24 +12,25 @@ command_exists() { command -v "$1" >/dev/null 2>&1; }
 if command_exists apt; then
   PKG_MANAGER="apt"
   UPDATE="sudo apt update"
-  INSTALL="sudo apt install -y"
+  INSTALL="sudo apt install -y git xclip curl make unzip gcc ripgrep python3 python3-venv python3-pip luarocks trash-cli fzf golang"
 elif command_exists pacman; then
   PKG_MANAGER="pacman"
   UPDATE="sudo pacman -Syu"
-  INSTALL="sudo pacman -S --noconfirm"
+  INSTALL="sudo pacman -S --noconfirm git xclip curl make unzip gcc ripgrep python3 python3-pip luarocks trash-cli fzf go"
 elif command_exists brew; then
   PKG_MANAGER="brew"
   UPDATE="brew update"
-  INSTALL="brew install"
+  INSTALL="brew install git xclip curl make unzip gcc ripgrep python3 luarocks trash-cli fzf go"
 else
   echo "Unsupported package manager. Please install git, xclip, curl,
-  make, cmake, unzip, gcc, ripgrep, python3, python3-venv, python3-pip, luarocks, trash-cli, fzf manually."
+  make, unzip, gcc, ripgrep, python3, python3-venv, python3-pip, luarocks,
+  trash-cli, fzf, golang manually."
   exit 1
 fi
 
 echo "Installing $PKG_MANAGER packages..."
 $UPDATE
-$INSTALL git xclip curl make cmake unzip gcc ripgrep python3 python3-venv python3-pip luarocks trash-cli fzf
+$INSTALL
 
 if ! command_exists cargo; then
   echo "Installing Rust and Cargo via rustup..."
