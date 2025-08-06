@@ -103,7 +103,7 @@ git clone "$REPO_URL" "$NVIM_CONFIG_DIR"
 
 source ~/.bashrc
 
-echo "Syncing Lazy.ncim plugins..."
+echo "Syncing Lazy.nvim plugins..."
 nvim --headless -c 'Lazy sync' -c 'qa'
 
 echo "Neovim configuration installed successfully!"
