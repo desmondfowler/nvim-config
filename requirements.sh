@@ -100,6 +100,8 @@ fi
 echo "Cloning Neovim configuration from $REPO_URL..."
 git clone "$REPO_URL" "$NVIM_CONFIG_DIR"
 
+source ~/.bashrc
+
 echo "Syncing Lazy.ncim plugins..."
 nvim --headless -c 'Lazy sync' -c 'qa'
 
