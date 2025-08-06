@@ -3,9 +3,9 @@
 set -e # Exit on error
 
 # Define variables
-NVIM_CONFIG_DIR = "$HOME/.config/nvim"
-REPO_URL = "https://github.com/desmondfowler/nvim-config.git"
-BACKUP_DIR = "$HOME/.config/nvim-backup-$(date +%Y%m%d%H%M%S)"
+NVIM_CONFIG_DIR="$HOME/.config/nvim"
+REPO_URL="https://github.com/desmondfowler/nvim-config.git"
+BACKUP_DIR="$HOME/.config/nvim-backup-$(date +%Y%m%d%H%M%S)"
 
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
