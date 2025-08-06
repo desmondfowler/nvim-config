@@ -27,7 +27,7 @@ return {
         map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
 
         local function client_supports_method(client, method, bufnr)
-          return client.supports_method(method, { bufnr = bufnr })
+          return client:supports_method(method, { bufnr = bufnr })
         end
 
         local client = vim.lsp.get_client_by_id(event.data.client_id)
