@@ -10,8 +10,8 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.signcolumn = 'yes'
-vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+-- vim.o.list = true
+-- vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 vim.o.inccommand = 'split'
 vim.o.cursorline = true
 vim.o.scrolloff = 5
@@ -23,6 +23,7 @@ vim.o.updatetime = 200
 vim.o.expandtab = true
 vim.o.tabstop = 2
 vim.o.shiftwidth = 2
+vim.o.softtabstop = 2
 vim.o.autoindent = true
 vim.o.smartindent = false
 
