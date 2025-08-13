@@ -31,6 +31,8 @@ return {
       javascript = { 'prettier' },
       typescript = { 'prettier' },
       json = { 'prettier' },
+      sql = { 'sql_formatter' },
+      pls = { 'sql_formatter' },
     },
     formatters = {
       stylua = {
@@ -48,6 +50,11 @@ return {
           '--call-parentheses',
           'None',
         },
+      },
+      sql_formatter = {
+
+        command = 'sql-formatter',
+        args = { '-l', 'plsql' },
       },
     },
   },
