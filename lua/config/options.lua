@@ -26,6 +26,7 @@ vim.o.shiftwidth = 2
 vim.o.softtabstop = 2
 vim.o.autoindent = true
 vim.o.smartindent = false
+vim.lsp.set_log_level 'ERROR'
 
 -- Sync clipboard
 vim.schedule(function()
