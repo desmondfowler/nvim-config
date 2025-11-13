@@ -1,5 +1,5 @@
 -- options.lua
-vim.g.python3_host_prog = '/home/desmond/venv/bin/python'
+vim.g.python3_host_prog = '/home/desmond/nvim-venv/bin/python'
 vim.g.have_nerd_font = false
 vim.o.number = true
 vim.o.relativenumber = true
@@ -26,7 +26,7 @@ vim.o.shiftwidth = 2
 vim.o.softtabstop = 2
 vim.o.autoindent = true
 vim.o.smartindent = false
-vim.lsp.set_log_level 'ERROR'
+vim.lsp.log.set_level 'ERROR'
 
 -- Sync clipboard
 vim.schedule(function()
