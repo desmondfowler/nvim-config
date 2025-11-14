@@ -17,26 +17,6 @@ return {
     'mfussenegger/nvim-dap',
   },
   config = function()
-    local java = require 'java'
-    java.setup {
-      root_markers = { 'pom.xml', 'build.gradle', '.git' },
-      jdk = { auto_install = true },
-      spring_boot_tools = {
-        enable = true,
-      },
-      java_test = {
-        enable = true,
-      },
-      java_debug_adapter = {
-        enable = true,
-      },
-      notifications = {
-        enable = true,
-      },
-      verification = {
-        invalid_order = true,
-      },
-    }
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
       callback = function(event)
@@ -131,26 +111,6 @@ return {
           Lua = {
             completion = {
               callSnippet = 'Replace',
-            },
-          },
-        },
-      },
-      jdtls = {
-        settings = {
-          java = {
-            configuration = {
-              runtimes = {
-                {
-                  name = 'JavaSE-21',
-                  path = '/home/desmond/.sdkman/candidates/java/21.0.8-tem/',
-                  default = true,
-                },
-              },
-            },
-            autobuild = { enabled = true },
-            import = {
-              gradle = { enabled = true },
-              maven = { enabled = true },
             },
           },
         },
