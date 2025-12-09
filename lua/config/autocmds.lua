@@ -11,12 +11,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd('ModeChanged', {
   pattern = '*',
   callback = function()
+    local ok, ls = pcall(require, 'luasnip')
+    if not ok then
+      return
+    end
+
     if
-      ((vim.v.event.old_mode == 's' and vim.v.event.new_mode == 'n') or vim.v.event.old_mode == i)
-      and require('luasnip').session.current_nodes[vim.api.nvim_get_current_buf()]
-      and not require('luasnip').session.jump_active
+      ((vim.v.event.old_mode == 's' and vim.v.event.new_mode == 'n') or vim.v.event.old_mode == 'i')
+      and ls.session.current_nodes[vim.api.nvim_get_current_buf()]
+      and not ls.session.jump_active
     then
-      require('luasnip').unlink_current()
+      ls.unlink_current()
     end
   end,
 })

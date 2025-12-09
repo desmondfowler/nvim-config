@@ -6,7 +6,6 @@ return { -- Highlight, edit, and navigate code
   opts = {
     ensure_installed = {
       'bash',
-      'c',
       'diff',
       'html',
       'lua',
@@ -19,14 +18,18 @@ return { -- Highlight, edit, and navigate code
       'python',
       'javascript',
       'typescript',
+      'tsx',
       'go',
-      'rust',
+      'gomod',
+      'gosum',
+      'json',
+      'yaml',
+      'dockerfile',
     },
     auto_install = true,
     highlight = {
       enable = true,
-      additional_vim_regex_highlighting = { 'ruby' },
     },
-    indent = { enable = true, disable = { 'ruby' } },
+    indent = { enable = true, disable = { 'yaml' } },
   },
 }

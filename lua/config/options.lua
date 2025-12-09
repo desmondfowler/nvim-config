@@ -1,5 +1,6 @@
 -- options.lua
 vim.g.python3_host_prog = '/home/desmond/nvim-venv/bin/python'
+vim.env.PATH = vim.env.PATH .. ':/home/desmond/.sdkman/candidates/java/current/bin'
 vim.g.have_nerd_font = false
 vim.o.number = true
 vim.o.relativenumber = true

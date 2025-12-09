@@ -14,26 +14,34 @@ return {
   },
   opts = {
     notify_on_error = true,
+    -- Disable format-on-save for specific filetypes
     format_on_save = function(bufnr)
-      local disable_filetypes = { c = true, cpp = true }
-      if disable_filetypes[vim.bo[bufnr].filetype] then
+      local disabled = { c = true, cpp = true }
+      if disabled[vim.bo[bufnr].filetype] then
         return nil
-      else
-        return {
-          timeout_ms = 500,
-          lsp_format = 'fallback',
-        }
       end
+      return {
+        timeout_ms = 1000,
+        lsp_format = 'fallback',
+      }
     end,
+    -- Formatters per filetype
     formatters_by_ft = {
       lua = { 'stylua' },
-      python = { 'black' },
+      python = { 'ruff_format', 'black' },
       javascript = { 'prettier' },
+      javascriptreact = { 'prettier' },
       typescript = { 'prettier' },
+      typescriptreact = { 'prettier' },
       json = { 'prettier' },
-      sql = { 'sql_formatter' },
-      pls = { 'sql_formatter' },
+      jsonc = { 'prettier' },
+      html = { 'prettier' },
+      yaml = { 'prettier' },
+      markdown = { 'prettier' },
+      dockerfile = { 'prettier' },
+      go = { 'gofumpt', 'goimports' },
     },
+    -- Formatter config
     formatters = {
       stylua = {
         prepend_args = {
@@ -50,11 +58,6 @@ return {
           '--call-parentheses',
           'None',
         },
-      },
-      sql_formatter = {
-
-        command = 'sql-formatter',
-        args = { '-l', 'plsql' },
       },
     },
   },
