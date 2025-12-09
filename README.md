@@ -12,7 +12,7 @@ curl -fsSL https://raw.githubusercontent.com/desmondfowler/nvim-config/master/re
 
 ## Dependencies
 
-All installed by the `requirements.sh` script. 
+All installed by the `requirements.sh` script.
 
 ## Plugins
 
