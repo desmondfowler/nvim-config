@@ -1,26 +1,38 @@
 #!/bin/bash
 
-set -e # Exit on error
+set -euo # Exit on error
 
 # Define variables
 NVIM_CONFIG_DIR="$HOME/.config/nvim"
 REPO_URL="git@github.com:desmondfowler/nvim-config.git"
 BACKUP_DIR="$HOME/.config/nvim-backup-$(date +%Y%m%d%H%M%S)"
-
+WAYLAND=false
+if [ -n "${WAYLAND_DISPLAY-}" ] || [ "${XDG_SESSION_TYPE-}" = "wayland"]l then
+  WAYLAND=true
+fi
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
 if command_exists apt; then
   PKG_MANAGER="apt"
   UPDATE="sudo apt update"
-  INSTALL="sudo apt install -y git xclip curl cmake make unzip gcc ripgrep python3 python3-venv python3-pip luarocks trash-cli fzf golang"
+  INSTALL="sudo apt install -y git curl cmake make unzip gcc ripgrep python3 python3-venv python3-pip luarocks trash-cli fzf golang"
 elif command_exists pacman; then
   PKG_MANAGER="pacman"
   UPDATE="sudo pacman -Syu"
-  INSTALL="sudo pacman -S --noconfirm git xclip curl cmake make unzip gcc ripgrep python3 python3-pip luarocks trash-cli fzf go"
+  INSTALL="sudo pacman -S --noconfirm git curl cmake make unzip gcc ripgrep python3 python3-pip luarocks trash-cli fzf go"
 elif command_exists brew; then
   PKG_MANAGER="brew"
   UPDATE="brew update"
-  INSTALL="brew install git xclip curl cmake make unzip gcc ripgrep python3 luarocks trash-cli fzf go"
+  INSTALL="brew install git curl cmake make unzip gcc ripgrep python3 luarocks trash-cli fzf go"
+elif command_exists dnf; then
+  PKG_MANAGER="dnf"
+  UPDATE="sudo dnf -y makecache"
+  INSTALL="sudo dnf install -y git curl cmake make unzip gcc ripgrep python3 python3-pip luarocks trash-cli fzf golang"
+elif command_exists yum; then
+  PKG_MANAGER="yum"
+  UPDATE="sudo yum -y makecache"
+  INSTALL="sudo yum install -y git curl cmake make unzip gcc ripgrep python3 python3-pip luarocks trash-cli fzf golang"
+
 else
   echo "Unsupported package manager. Please install git, xclip, curl,
   cmake, make, unzip, gcc, ripgrep, python3, python3-venv, python3-pip, luarocks,
@@ -31,7 +43,34 @@ fi
 echo "Installing $PKG_MANAGER packages..."
 $UPDATE
 $INSTALL
-
+# Clipboard tool: Wayland -> wl-clipboard, X11 -> xclip
+if $WAYLAND; then
+  if ! command_exists wl-copy; then
+    echo "Wayland detected; installing wl-clipboard..."
+    if [ "$PKG_MANAGER" = "dnf" ] || [ "$PKG_MANAGER" = "yum" ]; then
+      sudo "$PKG_MANAGER" install -y wl-clipboard
+    elif [ "$PKG_MANAGER" = "apt" ]; then
+      sudo apt install -y wl-clipboard
+    elif [ "$PKG_MANAGER" = "pacman" ]; then
+      sudo pacman -S --noconfirm wl-clipboard
+    elif [ "$PKG_MANAGER" = "brew" ]; then
+      brew install wl-clipboard
+    fi
+  fi
+else
+  if ! command_exists xclip; then
+    echo "X11 detected; installing xclip..."
+    if [ "$PKG_MANAGER" = "dnf" ] || [ "$PKG_MANAGER" = "yum" ]; then
+      sudo "$PKG_MANAGER" install -y xclip
+    elif [ "$PKG_MANAGER" = "apt" ]; then
+      sudo apt install -y xclip
+    elif [ "$PKG_MANAGER" = "pacman" ]; then
+      sudo pacman -S --noconfirm xclip
+    elif [ "$PKG_MANAGER" = "brew" ]; then
+      brew install xclip
+    fi
+  fi
+fi
 if ! command_exists cargo; then
   echo "Installing Rust and Cargo via rustup..."
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -54,6 +93,7 @@ if ! grep -q "bob/nvim-bin" "$HOME/.bashrc"; then
   echo "Adding Bob's Neovim binary path to ~/.bashrc..."
   echo 'export PATH="$HOME/.local/share/bob/nvim-bin/:$PATH"' >> "$HOME/.bashrc"
 fi
+export PATH="$HOME/.local/share/bob/nvim-bin/:$PATH"
 
 if [ ! -d "$HOME/.nvm" ]; then
     echo "Installing nvm..."
@@ -91,7 +131,7 @@ if [ -d "$NVIM_CONFIG_DIR" ]; then
   echo "Neovim config directory already exists at $NVIM_CONFIG_DIR."
   echo "Would you like to back it up before proceeding? (y/n)"
   read -r response
-  if ["$response" = "y"] || ["$response" = "Y"]; then
+  if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
     echo "Backing up existing config to $BACKUP_DIR..."
     mv "$NVIM_CONFIG_DIR" "$BACKUP_DIR"
   else
