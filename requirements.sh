@@ -1,7 +1,8 @@
 #!/bin/bash
 
-set -euo # Exit on error
-
+set -e # Exit on error
+set -u
+set -o pipefail
 # Define variables
 NVIM_CONFIG_DIR="$HOME/.config/nvim"
 REPO_URL="git@github.com:desmondfowler/nvim-config.git"
@@ -143,8 +144,6 @@ fi
 echo "Cloning Neovim configuration from $REPO_URL..."
 git clone "$REPO_URL" "$NVIM_CONFIG_DIR"
 
-source ~/.bashrc
-
 echo "Syncing Lazy.nvim plugins..."
 nvim --headless -c 'Lazy sync' -c 'qa'
 
@@ -152,3 +151,8 @@ echo "Neovim configuration installed successfully!"
 echo "Run ':Mason' and ':checkhealth' in Neovim to verify setup."
 
 echo "Dependencies installed. Run ':Mason' and ':checkhealth' in Neovim to verify."
+
+if ! command -v nvim >/dev/null 2>&1; then
+  echo "NOTE: nvim isn't on PATH in this current terminal yet."
+  echo "Open a new terminal or run: source ~/.bashrc"
+fi
