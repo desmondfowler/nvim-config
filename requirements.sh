@@ -8,7 +8,7 @@ NVIM_CONFIG_DIR="$HOME/.config/nvim"
 REPO_URL="git@github.com:desmondfowler/nvim-config.git"
 BACKUP_DIR="$HOME/.config/nvim-backup-$(date +%Y%m%d%H%M%S)"
 WAYLAND=false
-if [ -n "${WAYLAND_DISPLAY-}" ] || [ "${XDG_SESSION_TYPE-}" = "wayland"]; then
+if [ -n "${WAYLAND_DISPLAY-}" ] || [ "${XDG_SESSION_TYPE-}" = "wayland" ]; then
   WAYLAND=true
 fi
 command_exists() { command -v "$1" >/dev/null 2>&1; }
