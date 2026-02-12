@@ -5,7 +5,9 @@ set -u
 set -o pipefail
 # Define variables
 NVIM_CONFIG_DIR="$HOME/.config/nvim"
-REPO_URL="git@github.com:desmondfowler/nvim-config.git"
+# REPO_URL="git@github.com:desmondfowler/nvim-config.git"
+# Default to https so install works without ssh keys
+REPO_URL="${REPO_URL:-https://github.com/desmondfowler/nvim-config.git}"
 BACKUP_DIR="$HOME/.config/nvim-backup-$(date +%Y%m%d%H%M%S)"
 WAYLAND=false
 if [ -n "${WAYLAND_DISPLAY-}" ] || [ "${XDG_SESSION_TYPE-}" = "wayland" ]; then
@@ -16,23 +18,23 @@ command_exists() { command -v "$1" >/dev/null 2>&1; }
 if command_exists apt; then
   PKG_MANAGER="apt"
   UPDATE="sudo apt update"
-  INSTALL="sudo apt install -y git curl cmake make unzip gcc ripgrep python3 python3-venv python3-pip luarocks trash-cli fzf golang"
+  INSTALL="sudo apt install -y git curl cmake make unzip gcc ripgrep python3 python3-venv python3-pip luarocks trash-cli fzf golang fd-find pkg-config libssl-dev"
 elif command_exists pacman; then
   PKG_MANAGER="pacman"
   UPDATE="sudo pacman -Syu"
-  INSTALL="sudo pacman -S --noconfirm git curl cmake make unzip gcc ripgrep python3 python3-pip luarocks trash-cli fzf go"
+  INSTALL="sudo pacman -S --noconfirm git curl cmake make unzip gcc ripgrep python python-pip luarocks trash-cli fzf go fd openssl pkgconf"
 elif command_exists brew; then
   PKG_MANAGER="brew"
   UPDATE="brew update"
-  INSTALL="brew install git curl cmake make unzip gcc ripgrep python3 luarocks trash-cli fzf go"
+  INSTALL="brew install git curl cmake make unzip gcc ripgrep python3 luarocks trash-cli fzf go fd"
 elif command_exists dnf; then
   PKG_MANAGER="dnf"
   UPDATE="sudo dnf -y makecache"
-  INSTALL="sudo dnf install -y git curl cmake make unzip gcc ripgrep python3 python3-pip luarocks trash-cli fzf golang"
+  INSTALL="sudo dnf install -y git curl cmake make unzip gcc ripgrep python3 python3-pip python3-virtualenv luarocks trash-cli fzf golang fd-find openssl-devel pkgconf-pkg-config"
 elif command_exists yum; then
   PKG_MANAGER="yum"
   UPDATE="sudo yum -y makecache"
-  INSTALL="sudo yum install -y git curl cmake make unzip gcc ripgrep python3 python3-pip luarocks trash-cli fzf golang"
+  INSTALL="sudo yum install -y git curl cmake make unzip gcc ripgrep python3 python3-pip python3-virtualenv luarocks trash-cli fzf golang openssl-devel pkgconf-pkg-config"
 
 else
   echo "Unsupported package manager. Please install git, xclip, curl,
@@ -75,6 +77,7 @@ fi
 if ! command_exists cargo; then
   echo "Installing Rust and Cargo via rustup..."
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  # shellcheck source=/dev/null
   source "$HOME/.cargo/env"
 fi
 
@@ -92,6 +95,7 @@ yes | bob use nightly
 
 if ! grep -q "bob/nvim-bin" "$HOME/.bashrc"; then
   echo "Adding Bob's Neovim binary path to ~/.bashrc..."
+  # shellcheck disable=SC2016
   echo 'export PATH="$HOME/.local/share/bob/nvim-bin/:$PATH"' >> "$HOME/.bashrc"
 fi
 export PATH="$HOME/.local/share/bob/nvim-bin/:$PATH"
@@ -101,7 +105,9 @@ if [ ! -d "$HOME/.nvm" ]; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 fi
 export NVM_DIR="$HOME/.nvm"
+# shellcheck source=/dev/null
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# shellcheck source=/dev/null
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 if ! command_exists node; then
@@ -114,14 +120,25 @@ if ! command_exists prettier; then
     npm install -g prettier
 fi
 
-if ! command_exists black; then
-    echo "Installing black..."
-    python3 -m venv ~/nvim-venv
-    source ~/nvim-venv/bin/activate
-    pip3 install neovim
-    pip3 install pynvim
-    pip3 install black
+# if ! command_exists black; then
+#     echo "Installing black..."
+#     python3 -m venv ~/nvim-venv
+#     source ~/nvim-venv/bin/activate
+#     pip3 install neovim
+#     pip3 install pynvim
+#     pip3 install black
+# fi
+# Guarantee venv is made
+NVIM_PY_VENV="${NVIM_PY_VENV:-$HOME/.local/share/nvim/venv}"
+if [ ! -d "$NVIM_PY_VENV" ]; then
+  echo "Creating Neovim python venv at $NVIM_PY_VENV..."
+  python3 -m venv "$NVIM_PY_VENV"
 fi
+# shellcheck disable=SC1090
+# shellcheck source=/dev/null
+source "$NVIM_PY_VENV/bin/activate"
+pip3 install -U pip >/dev/null
+pip3 install -U pynvim black >/dev/null
 
 if ! luarocks list --local | grep -q luv; then
     echo "Installing lua-luv..."
