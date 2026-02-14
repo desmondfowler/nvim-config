@@ -1,6 +1,16 @@
 -- options.lua
-vim.g.python3_host_prog = '/home/desmond/nvim-venv/bin/python'
-vim.env.PATH = vim.env.PATH .. ':/home/desmond/.sdkman/candidates/java/current/bin'
+local python_host = vim.fn.stdpath 'data' .. '/venv/bin/python'
+if vim.fn.executable(python_host) == 1 then
+  vim.g.python3_host_prog = python_host
+elseif vim.fn.executable 'python3' == 1 then
+  vim.g.python3_host_prog = vim.fn.exepath 'python3'
+end
+
+local sdkman_java_bin = (vim.env.HOME or '') .. '/.sdkman/candidates/java/current/bin'
+if vim.fn.isdirectory(sdkman_java_bin) == 1 and not string.find(vim.env.PATH or '', sdkman_java_bin, 1, true) then
+  vim.env.PATH = (vim.env.PATH or '') .. ':' .. sdkman_java_bin
+end
+
 vim.g.have_nerd_font = false
 vim.o.number = true
 vim.o.relativenumber = true
