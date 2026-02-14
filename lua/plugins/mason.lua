@@ -1,5 +1,6 @@
 return {
   'mason-org/mason.nvim',
+  event = { 'BufReadPre', 'BufNewFile' },
   dependencies = {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
   },
@@ -30,10 +31,12 @@ return {
         -- LSP servers
         'lua-language-server',
         'pyright',
-        'ruff-lsp',
         'gopls',
-
         'vtsls',
+        'yaml-language-server',
+        'json-lsp',
+        'marksman',
+        'dockerfile-language-server',
       },
     }
   end,
