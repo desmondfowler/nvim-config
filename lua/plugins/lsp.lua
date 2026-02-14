@@ -1,6 +1,7 @@
 return {
   'neovim/nvim-lspconfig',
   event = { 'BufReadPre', 'BufNewFile' },
+  cmd = { 'LspInfo', 'LspStart', 'LspStop', 'LspRestart' },
 
   config = function()
     vim.diagnostic.config {

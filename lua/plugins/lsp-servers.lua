@@ -1,7 +1,8 @@
 return {
   'mason-org/mason-lspconfig.nvim',
+  event = { 'BufReadPre', 'BufNewFile' },
   dependencies = {
-    { 'mason-org/mason.nvim', opts = {} },
+    'mason-org/mason.nvim',
     'neovim/nvim-lspconfig',
     'saghen/blink.cmp',
   },
@@ -36,7 +37,7 @@ return {
           },
         },
       },
-      ruff_lsp = {
+      ruff = {
         on_attach = function(client, _)
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
@@ -98,13 +99,21 @@ return {
     }
 
     local capabilities = require('blink.cmp').get_lsp_capabilities()
+    local has_new_lsp_api = type(vim.lsp.config) == 'function' and type(vim.lsp.enable) == 'function'
+    local lspconfig = not has_new_lsp_api and require 'lspconfig' or nil
 
     require('mason-lspconfig').setup {
       handlers = {
         function(server_name)
           local server = servers[server_name] or {}
           server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
+
+          if has_new_lsp_api then
+            vim.lsp.config(server_name, server)
+            vim.lsp.enable(server_name)
+          else
+            lspconfig[server_name].setup(server)
+          end
         end,
       },
     }
