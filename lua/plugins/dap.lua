@@ -1,6 +1,67 @@
 return {
   'mfussenegger/nvim-dap',
-  event = 'VeryLazy',
+  cmd = {
+    'DapContinue',
+    'DapToggleBreakpoint',
+    'DapStepOver',
+    'DapStepInto',
+    'DapStepOut',
+    'DapTerminate',
+    'DapUIOpen',
+    'DapUIClose',
+    'DapUIToggle',
+  },
+  keys = {
+    {
+      '<F5>',
+      function()
+        require('dap').continue()
+      end,
+      desc = 'DAP Continue',
+    },
+    {
+      '<F10>',
+      function()
+        require('dap').step_over()
+      end,
+      desc = 'DAP Step Over',
+    },
+    {
+      '<F11>',
+      function()
+        require('dap').step_into()
+      end,
+      desc = 'DAP Step Into',
+    },
+    {
+      '<F12>',
+      function()
+        require('dap').step_out()
+      end,
+      desc = 'DAP Step Out',
+    },
+    {
+      '<leader>db',
+      function()
+        require('dap').toggle_breakpoint()
+      end,
+      desc = 'Toggle Breakpoint',
+    },
+    {
+      '<leader>dc',
+      function()
+        require('dap').run_to_cursor()
+      end,
+      desc = 'Run to Cursor',
+    },
+    {
+      '<leader>du',
+      function()
+        require('dapui').toggle()
+      end,
+      desc = 'Toggle DAP UI',
+    },
+  },
   dependencies = {
     'jay-babu/mason-nvim-dap.nvim',
     'rcarriga/nvim-dap-ui',
@@ -76,15 +137,5 @@ return {
     dap.listeners.before.event_exited['dapui_config'] = function()
       dapui.close()
     end
-
-    local map = vim.keymap.set
-
-    map('n', '<F5>', dap.continue, { desc = 'DAP Continue' })
-    map('n', '<F10>', dap.step_over, { desc = 'DAP Step Over' })
-    map('n', '<F11>', dap.step_into, { desc = 'DAP Step Into' })
-    map('n', '<F12>', dap.step_out, { desc = 'DAP Step Out' })
-    map('n', '<leader>db', dap.toggle_breakpoint, { desc = 'Toggle Breakpoint' })
-    map('n', '<leader>dc', dap.run_to_cursor, { desc = 'Run to Cursor' })
-    map('n', '<leader>du', dapui.toggle, { desc = 'Toggle DAP UI' })
   end,
 }
