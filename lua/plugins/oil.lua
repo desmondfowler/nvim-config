@@ -1,7 +1,6 @@
 return {
   'stevearc/oil.nvim',
   cmd = 'Oil',
-  dependencies = { 'echasnovski/mini.icons', opts = { style = 'glyph' } },
   config = function()
     require('oil').setup {
       columns = {
