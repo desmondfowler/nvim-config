@@ -20,21 +20,25 @@ As of right now, the plugins contained are as follows:
 
 ```bash
 lua/plugins/
-├── autopairs.lua
 ├── blink.lua
 ├── colorscheme.lua
 ├── conform.lua
+├── dap.lua
 ├── gitsigns.lua
-├── lazydev.lua
-├── lspconfig.lua
+├── gotest.lua
+├── lsp-servers.lua
+├── lsp.lua
+├── mason.lua
 ├── mini.lua
 ├── oil.lua
+├── py-venv-activate.lua
+├── schemastore.lua
 ├── telescope.lua
-├── todo_comments.lua
+├── todo-comments.lua
 ├── treesitter.lua
 └── whichkey.lua
 
-1 directory, 13 files
+1 directory, 17 files
 ```
 
 NOTE: These are not the actual github repo names, they are just what I called my lua files for Lazy. They mostly match, but for example, `colorscheme.lua` is just a basic lua file that you can change the colorscheme in to have it use a different scheme.
