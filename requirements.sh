@@ -254,7 +254,7 @@ install_python_venv() {
     python3 -m venv "$NVIM_PY_VENV"
   fi
 
-  "$NVIM_PY_VENV/bin/python" -m pip install -U pip pynvim black >/dev/null
+  "$NVIM_PY_VENV/bin/python" -m pip install -U pip pynvim >/dev/null
 }
 
 install_luarocks_luv() {
