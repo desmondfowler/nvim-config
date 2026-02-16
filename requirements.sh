@@ -125,6 +125,26 @@ install_system_packages() {
   fi
 }
 
+install_lua51_compat() {
+  if command_exists lua5.1; then
+    return 0
+  fi
+
+  log "Installing Lua 5.1 compatibility runtime (optional)..."
+  if command_exists dnf; then
+    if sudo dnf install -y compat-lua; then
+      return 0
+    fi
+  elif command_exists apt-get; then
+    if sudo apt-get install -y lua5.1; then
+      return 0
+    fi
+  fi
+
+  log "Lua 5.1 compatibility package not installed. Continuing."
+  return 0
+}
+
 verify_core_commands() {
   local commands=(
     git curl cmake make gcc unzip rg python3 pip3 luarocks fzf go node npm
@@ -307,6 +327,7 @@ main() {
   require_command sudo
 
   install_system_packages
+  install_lua51_compat
   verify_core_commands
   ensure_fd_command
   install_rust_if_needed
