@@ -4,7 +4,6 @@ return {
   dependencies = {
     'mason-org/mason.nvim',
     'neovim/nvim-lspconfig',
-    'saghen/blink.cmp',
   },
 
   opts = {},
@@ -98,7 +97,24 @@ return {
       dockerls = {},
     }
 
-    local capabilities = require('blink.cmp').get_lsp_capabilities()
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities.textDocument.completion.completionItem = {
+      documentationFormat = { 'markdown', 'plaintext' },
+      snippetSupport = true,
+      preselectSupport = true,
+      insertReplaceSupport = true,
+      labelDetailsSupport = true,
+      deprecatedSupport = true,
+      commitCharactersSupport = true,
+      tagSupport = { valueSet = { 1 } },
+      resolveSupport = {
+        properties = {
+          'documentation',
+          'detail',
+          'additionalTextEdits',
+        },
+      },
+    }
     local has_new_lsp_api = type(vim.lsp.config) == 'function' and type(vim.lsp.enable) == 'function'
     local lspconfig = not has_new_lsp_api and require 'lspconfig' or nil
 
