@@ -1,6 +1,14 @@
 return {
   'mason-org/mason.nvim',
   event = { 'BufReadPre', 'BufNewFile' },
+  cmd = {
+    'Mason',
+    'MasonInstall',
+    'MasonUninstall',
+    'MasonUninstallAll',
+    'MasonLog',
+    'MasonUpdate',
+  },
   dependencies = {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
   },
