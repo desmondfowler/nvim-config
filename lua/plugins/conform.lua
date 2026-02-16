@@ -28,7 +28,7 @@ return {
     -- Formatters per filetype
     formatters_by_ft = {
       lua = { 'stylua' },
-      python = { 'ruff_format', 'black' },
+      python = { 'ruff_format' },
       javascript = { 'prettier' },
       javascriptreact = { 'prettier' },
       typescript = { 'prettier' },
