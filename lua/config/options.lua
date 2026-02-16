@@ -12,6 +12,9 @@ if vim.fn.isdirectory(sdkman_java_bin) == 1 and not string.find(vim.env.PATH or 
 end
 
 vim.g.have_nerd_font = false
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.showmode = false
