@@ -9,6 +9,7 @@ BACKUP_DIR="$HOME/.config/nvim-backup-$(date +%Y%m%d%H%M%S)"
 NVIM_PY_VENV="${NVIM_PY_VENV:-$HOME/.local/share/nvim/venv}"
 BOB_BIN_DIR="$HOME/.local/share/bob/nvim-bin"
 FORCE_REPLACE=false
+USE_EXISTING_CONFIG=false
 
 command_exists() {
   command -v "$1" >/dev/null 2>&1
@@ -45,6 +46,7 @@ Usage: ./requirements.sh [--force|-f] [--help|-h]
 
 Options:
   -f, --force   Allow replacing ~/.config/nvim even if it is a dirty git repo.
+  -e, --existing  Keep and use existing ~/.config/nvim (skip backup/remove/clone).
   -h, --help    Show this help message.
 EOF
 }
@@ -54,6 +56,9 @@ parse_args() {
     case "$1" in
       -f|--force)
         FORCE_REPLACE=true
+        ;;
+      -e|--existing)
+        USE_EXISTING_CONFIG=true
         ;;
       -h|--help)
         usage
@@ -103,7 +108,7 @@ install_system_packages() {
     sudo apt-get install -y \
       git curl ca-certificates cmake make gcc unzip ripgrep \
       python3 python3-venv python3-pip luarocks trash-cli fzf \
-      golang-go fd-find pkg-config libssl-dev nodejs npm \
+      golang-go fd-find pkg-config libssl-dev clang libclang-dev nodejs npm \
       xclip wl-clipboard
   elif command_exists dnf; then
     log "Detected Fedora (dnf)."
@@ -111,7 +116,7 @@ install_system_packages() {
     sudo dnf install -y \
       git curl ca-certificates cmake make gcc unzip ripgrep \
       python3 python3-pip python3-virtualenv python3-devel \
-      luarocks trash-cli fzf golang fd-find nodejs npm \
+      luarocks trash-cli fzf golang fd-find clang clang-devel llvm-devel nodejs npm \
       pkgconf-pkg-config openssl-devel \
       xclip wl-clipboard
   else
@@ -149,6 +154,53 @@ install_rustup() {
 
 install_rust_if_needed() {
   ensure_command cargo install_rustup
+}
+
+install_tree_sitter_cli() {
+  log "Installing tree-sitter CLI via Cargo..."
+  if cargo install tree-sitter-cli; then
+    return 0
+  fi
+
+  log "Cargo install failed (likely libclang/toolchain issue)."
+  return 1
+}
+
+install_tree_sitter_via_pkg_manager() {
+  if command_exists dnf; then
+    if sudo dnf install -y tree-sitter-cli; then
+      return 0
+    fi
+    if sudo dnf install -y tree-sitter; then
+      return 0
+    fi
+  elif command_exists apt-get; then
+    if sudo apt-get install -y tree-sitter-cli; then
+      return 0
+    fi
+    if sudo apt-get install -y tree-sitter; then
+      return 0
+    fi
+  fi
+
+  return 1
+}
+
+install_tree_sitter_if_needed() {
+  if command_exists tree-sitter; then
+    return 0
+  fi
+
+  if install_tree_sitter_cli && command_exists tree-sitter; then
+    return 0
+  fi
+
+  log "Cargo install failed; trying distro packages..."
+  if install_tree_sitter_via_pkg_manager && command_exists tree-sitter; then
+    return 0
+  fi
+
+  die "Unable to install tree-sitter CLI via Cargo or distro packages."
 }
 
 install_bob() {
@@ -208,15 +260,24 @@ abort_if_dirty_git_repo() {
 }
 
 clone_or_replace_config() {
+  if [ "$USE_EXISTING_CONFIG" = "true" ] && [ -d "$NVIM_CONFIG_DIR" ]; then
+    log "Using existing config at $NVIM_CONFIG_DIR (clone/replace skipped)."
+    return 0
+  fi
+
   abort_if_dirty_git_repo
 
   if [ -d "$NVIM_CONFIG_DIR" ]; then
     log "Neovim config directory already exists at $NVIM_CONFIG_DIR."
-    log "Back it up before proceeding? (y/n)"
+    log "Back it up before proceeding? (y/n/e)"
+    log "  y = backup then replace, n = replace without backup, e = keep existing"
     read -r response
     if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
       log "Backing up existing config to $BACKUP_DIR..."
       mv "$NVIM_CONFIG_DIR" "$BACKUP_DIR"
+    elif [ "$response" = "e" ] || [ "$response" = "E" ]; then
+      log "Keeping existing config. Skipping clone/replace."
+      return 0
     else
       log "Removing existing Neovim config directory..."
       rm -rf "$NVIM_CONFIG_DIR"
@@ -249,6 +310,7 @@ main() {
   verify_core_commands
   ensure_fd_command
   install_rust_if_needed
+  install_tree_sitter_if_needed
   persist_path_exports
   install_bob_and_neovim
   install_node_and_prettier
