@@ -6,6 +6,7 @@ return { -- Autocompletion
     {
       'L3MON4D3/LuaSnip',
       version = 'v2.*',
+      build = 'make install_jsregexp',
       dependencies = {
         {
           'rafamadriz/friendly-snippets',
@@ -39,7 +40,7 @@ return { -- Autocompletion
       default = { 'lsp', 'snippets', 'path', 'buffer' },
     },
     snippets = { preset = 'luasnip' },
-    fuzzy = { implementation = 'lua' },
+    fuzzy = { implementation = 'prefer_rust_with_warning' },
     signature = { enabled = true },
   },
 }
