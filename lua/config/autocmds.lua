@@ -25,3 +25,13 @@ vim.api.nvim_create_autocmd('ModeChanged', {
     end
   end,
 })
+
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    if vim.fn.argv(0) == '.' then
+      vim.schedule(function()
+        vim.cmd 'Oil'
+      end)
+    end
+  end,
+})
